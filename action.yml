@@ -22,6 +22,12 @@ inputs:
   wait-for-minutes:
     description: 'How long to wait for the task reach stopped state, in minutes (default: 30 minutes, max: 6 hours).'
     required: false
+  environment-override:
+    description: 'Environment overrides for the container. To be in JSON format'
+    required: false
+  command-override:
+    description: 'Command override for the container'
+    required: false
 outputs:
   task-definition-arn:
     description: 'The ARN of the registered ECS task definition'

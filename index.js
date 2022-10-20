@@ -94,6 +94,8 @@ async function run() {
     if (waitForMinutes > MAX_WAIT_MINUTES) {
       waitForMinutes = MAX_WAIT_MINUTES;
     }
+    const commandOverride = core.getInput('command-override', { required: false });
+    const environmentOverride = core.getInput('environment-overrides', { required: false });
 
     // Register the task definition
     core.debug('Registering the task definition');
@@ -124,11 +126,31 @@ async function run() {
       startedBy: startedBy
     })}`)
 
+    let containerOverrides;
+    if (environmentOverride || commandOverride) {
+      containerOverrides = [];
+      let containerOverridesObj = new Object();
+
+      if (commandOverride) {
+        containerOverridesObj['command'] = [commandOverride.split(",")];
+      }
+
+      if (environmentOverride) {
+        containerOverridesObj['environment'] = JSON.parse(environmentOverride);
+      }
+      containerOverrides = {
+        'containerOverrides': [
+          containerOverridesObj
+        ]
+      }
+    }
+
     const runTaskResponse = await ecs.runTask({
       cluster: clusterName,
       taskDefinition: taskDefArn,
       count: count,
-      startedBy: startedBy
+      startedBy: startedBy,
+      overrides: containerOverrides
     }).promise();
 
     core.debug(`Run task response ${JSON.stringify(runTaskResponse)}`)
