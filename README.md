@@ -21,7 +21,7 @@ Runs an Amazon ECS task on ECS cluster.
 
 ```yaml
     - name: Run Task on Amazon ECS
-      uses: smitp/amazon-ecs-run-task@v1
+      uses: pjaybell/amazon-ecs-run-task@v1
       with:
         task-definition: task-definition.json
         cluster: my-cluster
